@@ -1,0 +1,28 @@
+//
+//  Constants.swift
+//  DateTools
+//
+// Copyright 2015 Codewise sp. z o.o. Sp. K.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+public let SECONDS_IN_YEAR = 31556900
+public let SECONDS_IN_MONTH_28 = 2419200
+public let SECONDS_IN_MONTH_29 = 2505600
+public let SECONDS_IN_MONTH_30 = 2592000
+public let SECONDS_IN_MONTH_31 = 2678400
+public let SECONDS_IN_WEEK = 604800
+public let SECONDS_IN_DAY = 86400
+public let SECONDS_IN_HOUR = 3600
+public let SECONDS_IN_MINUTE = 60
+public let MILLISECONDS_IN_DAY = 86400000
