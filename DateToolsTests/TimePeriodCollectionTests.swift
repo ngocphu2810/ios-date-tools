@@ -31,12 +31,12 @@ class TimePeriodCollectionTests: XCTestCase {
         collection = TimePeriodCollection(calendar: calendar)
         emptyCollection = TimePeriodCollection(calendar: calendar)
         
-        startDate = calendar.dateWithYear(2010, month: 01, day: 01)
-        monthPeriod = self.createTimePeriodWithMothSize(1, startingAt: startDate)
-        twoMonthsPeriod = self.createTimePeriodWithMothSize(2, startingAt: startDate)
-        monthPeriodAfterMonth = self.createTimePeriodWithMothSize(1, startingAt: calendar.dateByAddingMonths(1, toDate: self.startDate))
-        twoMonthsPeriodAfterTwoWeeks = self.createTimePeriodWithMothSize(2, startingAt: calendar.dateByAddingWeeks(2, toDate: self.startDate))
-        fourMonthsPeriod = self.createTimePeriodWithMothSize(4, startingAt: self.startDate)
+        startDate = date("2010-01-01")
+        monthPeriod = self.createTimePeriodWithMonthSize(1, startingAt: startDate)
+        twoMonthsPeriod = self.createTimePeriodWithMonthSize(2, startingAt: startDate)
+        monthPeriodAfterMonth = self.createTimePeriodWithMonthSize(1, startingAt: calendar.dateByAddingMonths(1, toDate: self.startDate))
+        twoMonthsPeriodAfterTwoWeeks = self.createTimePeriodWithMonthSize(2, startingAt: calendar.dateByAddingWeeks(2, toDate: self.startDate))
+        fourMonthsPeriod = self.createTimePeriodWithMonthSize(4, startingAt: self.startDate)
         
         collection.addTimePeriod(monthPeriod)
         collection.addTimePeriod(twoMonthsPeriod)
@@ -243,33 +243,33 @@ class TimePeriodCollectionTests: XCTestCase {
     func testPeriodCollection_shiftLater_shiftsAllPeriodsLaterByGivenSize() {
         collection.shiftLaterWithSize(.Week, amount: 1)
         
-        expect(self.collection[0].startDate) == calendar.dateWithYear(2010, month: 01, day: 08)
-        expect(self.collection[0].endDate) == calendar.dateWithYear(2010, month: 02, day: 08)
+        expect(self.collection[0].startDate) == date("2010-01-08")
+        expect(self.collection[0].endDate)   == date("2010-02-08")
         
-        expect(self.collection[1].startDate) == calendar.dateWithYear(2010, month: 01, day: 08)
-        expect(self.collection[1].endDate) == calendar.dateWithYear(2010, month: 03, day: 08)
+        expect(self.collection[1].startDate) == date("2010-01-08")
+        expect(self.collection[1].endDate)   == date("2010-03-08")
         
-        expect(self.collection[2].startDate) == calendar.dateWithYear(2010, month: 02, day: 08)
-        expect(self.collection[2].endDate) == calendar.dateWithYear(2010, month: 03, day: 08)
+        expect(self.collection[2].startDate) == date("2010-02-08")
+        expect(self.collection[2].endDate)   == date("2010-03-08")
         
-        expect(self.collection[3].startDate) == calendar.dateWithYear(2010, month: 01, day: 22)
-        expect(self.collection[3].endDate) == calendar.dateWithYear(2010, month: 03, day: 22)
+        expect(self.collection[3].startDate) == date("2010-01-22")
+        expect(self.collection[3].endDate)   == date("2010-03-22")
     }
     
     func testPeriodCollection_shiftEarlier_shiftsAllPeriodsEarlierByGivenSize() {
         collection.shiftEarlierWithSize(.Month, amount: 2)
         
-        expect(self.collection[0].startDate) == calendar.dateWithYear(2009, month: 11, day: 01)
-        expect(self.collection[0].endDate) == calendar.dateWithYear(2009, month: 12, day: 01)
+        expect(self.collection[0].startDate) == date("2009-11-01")
+        expect(self.collection[0].endDate)   == date("2009-12-01")
         
-        expect(self.collection[1].startDate) == calendar.dateWithYear(2009, month: 11, day: 01)
-        expect(self.collection[1].endDate) == calendar.dateWithYear(2010, month: 01, day: 01)
+        expect(self.collection[1].startDate) == date("2009-11-01")
+        expect(self.collection[1].endDate)   == date("2010-01-01")
         
-        expect(self.collection[2].startDate) == calendar.dateWithYear(2009, month: 12, day: 01)
-        expect(self.collection[2].endDate) == calendar.dateWithYear(2010, month: 01, day: 01)
+        expect(self.collection[2].startDate) == date("2009-12-01")
+        expect(self.collection[2].endDate)   == date("2010-01-01")
         
-        expect(self.collection[3].startDate) == calendar.dateWithYear(2009, month: 11, day: 15)
-        expect(self.collection[3].endDate) == calendar.dateWithYear(2010, month: 01, day: 15)
+        expect(self.collection[3].startDate) == date("2009-11-15")
+        expect(self.collection[3].endDate)   == date("2010-01-15")
     }
     
     func testPeriodCollection_isEqualToCollectionConsideringOrder_returnsTrueWhenCollectionsAreEqual() {
@@ -335,8 +335,8 @@ class TimePeriodCollectionTests: XCTestCase {
     }
     
     func testPeriodCollection_periodsIntersectedByDate_returnsAllPeriodsThatContainGivenDate() {
-        let periods1 = self.collection.periodsIntersectedByDate(calendar.dateWithYear(2010, month: 01, day: 20))
-        let periods2 = self.collection.periodsIntersectedByDate(calendar.dateWithYear(2010, month: 03, day: 02))
+        let periods1 = self.collection.periodsIntersectedByDate(date("2010-01-20"))
+        let periods2 = self.collection.periodsIntersectedByDate(date("2010-03-02"))
         
         expect(periods1.count) == 3
         expect(periods1.periods).to(contain(monthPeriod, twoMonthsPeriod, twoMonthsPeriodAfterTwoWeeks))
@@ -369,7 +369,7 @@ class TimePeriodCollectionTests: XCTestCase {
 
     //MARK: - helpers
     
-    func createTimePeriodWithMothSize(amount: Int, startingAt: NSDate) -> TimePeriod {
+    func createTimePeriodWithMonthSize(amount: Int, startingAt: NSDate) -> TimePeriod {
         return TimePeriod(size: .Month, amount: amount, startingAt: startingAt, calendar: self.calendar)
     }
     

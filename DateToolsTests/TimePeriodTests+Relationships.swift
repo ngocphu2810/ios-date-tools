@@ -29,12 +29,12 @@ extension TimePeriodTests {
     }
     
     func testTimePeriod_relationToPeriodInsideStartTouching_returnsInsideStartTouchingPeriodRelation() {
-        let insideTouchingPeriod = TimePeriod(startDate: calendar.dateWithYear(1900, month: 06, day: 15), endDate: calendar.dateWithYear(2020, month: 01, day: 10), calendar: self.calendar)
+        let insideTouchingPeriod = TimePeriod(startDate: date("1900-06-15"), endDate: date("2020-01-10"), calendar: self.calendar)
         expect(self.longPeriod.relationToPeriod(insideTouchingPeriod)) == TimePeriodRelation.InsideStartTouching
     }
     
     func testTimePeriod_relationToPeriodEnclosingStartTouching_returnsEnclosingStartTouchingPeriodRelation() {
-        let enclosingStartTouching = TimePeriod(startDate: calendar.dateWithYear(1900, month: 06, day: 15), endDate: calendar.dateWithYear(1950), calendar: calendar)
+        let enclosingStartTouching = TimePeriod(startDate: date("1900-06-15"), endDate: calendar.dateWithYear(1950), calendar: calendar)
         expect(self.longPeriod.relationToPeriod(enclosingStartTouching)) == TimePeriodRelation.EnclosingStartTouching
     }
     

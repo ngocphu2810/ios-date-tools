@@ -36,15 +36,15 @@ class TimePeriodTests: XCTestCase {
         startDate = calendar.dateWithYear(2000, month: 01, day: 01)
         endDate = calendar.dateWithYear(1900, month: 06, day: 15)
         longPeriod = TimePeriod(startDate: endDate, endDate: startDate, calendar: calendar)
-        shortPeriod = TimePeriod(startDate: startDate, endDate: calendar.dateWithYear(2000, month: 03, day: 14), calendar: calendar)
-        veryShortPeriod = TimePeriod(startDate: startDate, endDate: calendar.dateWithYear(2000, month: 01, day: 02, hour: 12, minute: 20, second: 30), calendar: calendar)
-        periodBeforeOverlaps = TimePeriod(startDate: calendar.dateWithYear(1890, month: 01, day: 01), endDate: calendar.dateWithYear(1960, month: 01, day: 01), calendar: calendar)
-        periodAfterOverlaps = TimePeriod(startDate: calendar.dateWithYear(1950, month: 01, day: 01), endDate: calendar.dateWithYear(2010, month: 01, day: 01), calendar: calendar)
-        periodBefore = TimePeriod(startDate: calendar.dateWithYear(1890, month: 01, day: 01), endDate: calendar.dateWithYear(1900, month: 06, day: 14), calendar: calendar)
-        periodAfter = TimePeriod(startDate: calendar.dateWithYear(2000, month: 01, day: 02), endDate: calendar.dateWithYear(2010, month: 01, day: 01), calendar: calendar)
-        periodInside = TimePeriod(startDate: calendar.dateWithYear(1950, month: 01, day: 01), endDate: calendar.dateWithYear(1960, month: 01, day: 01), calendar: calendar)
-        periodBeforeTouching = TimePeriod(startDate: calendar.dateWithYear(1890, month: 01, day: 01), endDate: calendar.dateWithYear(1900, month: 06, day: 15), calendar: calendar)
-        periodAfterTouching = TimePeriod(startDate: calendar.dateWithYear(2000, month: 01, day: 01), endDate: calendar.dateWithYear(2010, month: 01, day: 01), calendar: calendar)
+        shortPeriod = TimePeriod(startDate: startDate, endDate: date("2000-03-14"), calendar: calendar)
+        veryShortPeriod = TimePeriod(startDate: startDate, endDate: date("2000-01-02 12:20:30"), calendar: calendar)
+        periodBeforeOverlaps = TimePeriod(startDate: date("1890-01-01"), endDate: date("1960-01-01"), calendar: calendar)
+        periodAfterOverlaps = TimePeriod(startDate: date("1950-01-01"), endDate: date("2010-01-01"), calendar: calendar)
+        periodBefore = TimePeriod(startDate: date("1890-01-01"), endDate: date("1900-06-14"), calendar: calendar)
+        periodAfter = TimePeriod(startDate: date("2000-01-02"), endDate: date("2010-01-01"), calendar: calendar)
+        periodInside = TimePeriod(startDate: date("1950-01-01"), endDate: date("1960-01-01"), calendar: calendar)
+        periodBeforeTouching = TimePeriod(startDate: date("1890-01-01"), endDate: date("1900-06-15"), calendar: calendar)
+        periodAfterTouching = TimePeriod(startDate: date("2000-01-01"), endDate: date("2010-01-01"), calendar: calendar)
 
     }
     
@@ -67,90 +67,45 @@ class TimePeriodTests: XCTestCase {
     
     //MARK: - create with starting date
     
-    func testTimePeriod_createPeriodStartingWithDaySize_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Day, startingAt: startDate, calendar: calendar)
+    func testTimePeriod_createPeriodsWithStartingDate_returnsValidTimePeriods() {
+        let testCases: [(TimePeriodSize, Int, NSDate)] = [
+            (.Day, 1, date("2000-01-02")),
+            (.Month, 1, date("2000-02-01")),
+            (.Year, 1, date("2001-01-01")),
+            (.Day, 5, date("2000-01-06")),
+            (.Month, 5, date("2000-06-01")),
+            (.Year, 5, date("2005-01-01")),
+            (.Day, 50, date("2000-02-20")),
+            (.Month, 14, date("2001-03-01")),
+            (.Day, -10, date("1999-12-22")),
+            (.Month, -28, date("1997-09-01")),
+            (.Day, -32, date("1999-11-30"))
+        ]
         
-        expect(period.startDate) == startDate
-        expect(period.endDate) == calendar.dateWithYear(2000, month: 01, day: 02)
-    }
-    
-    func testTimePeriod_createPeriodStartingWithMonthSize_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Month, startingAt: startDate, calendar: calendar)
-        
-        expect(period.startDate) == startDate
-        expect(period.endDate) == calendar.dateWithYear(2000, month: 02, day: 01)
-    }
-    
-    func testTimePeriod_createPeriodStartingWithYearSize_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Year, startingAt: startDate, calendar: calendar)
-        
-        expect(period.startDate) == startDate
-        expect(period.endDate) == calendar.dateWithYear(2001, month: 01, day: 01)
-    }
-    
-    func testTimePeriod_createPeriodStartingWithDaySizeAndCustomAmount_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Day, amount: 5, startingAt: startDate, calendar: calendar)
-        
-        expect(period.startDate) == startDate
-        expect(period.endDate) == calendar.dateWithYear(2000, month: 01, day: 06)
-    }
-    
-    func testTimePeriod_createPeriodStartingWithMonthSizeAndCustomAmount_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Month, amount: 5, startingAt: startDate, calendar: calendar)
-        
-        expect(period.startDate) == startDate
-        expect(period.endDate) == calendar.dateWithYear(2000, month: 06, day: 01)
-    }
-    
-    func testTimePeriod_createPeriodStartingWithYearSizeAndCustomAmount_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Year, amount: 5, startingAt: startDate, calendar: calendar)
-        
-        expect(period.startDate) == startDate
-        expect(period.endDate) == calendar.dateWithYear(2005, month: 01, day: 01)
+        for (size, amount, expectedDate) in testCases {
+            self.testTimePeriodStartingAtWithSize(size, amount: amount, expectedEndDate: expectedDate)
+        }
     }
     
     //MARK: - create with ending date
     
-    func testTimePeriod_createPeriodEndingWithDaySize_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Day, endingAt: endDate, calendar: calendar)
+    func testTimePeriod_createPeriodsWithEndingDate_returnsValidTimePeriods() {
+        let testCases: [(TimePeriodSize, Int, NSDate)] = [
+            (.Day, 1, date("1900-06-14")),
+            (.Month, 1, date("1900-05-15")),
+            (.Year, 1, date("1899-06-15")),
+            (.Day, 5, date("1900-06-10")),
+            (.Month, 5, date("1900-01-15")),
+            (.Year, 5, date("1895-06-15")),
+            (.Day, 50, date("1900-04-26")),
+            (.Month, 14, date("1899-04-15")),
+            (.Day, -14, date("1900-06-29")),
+            (.Month, -14, date("1901-08-15"))
+        ]
         
-        expect(period.startDate) == calendar.dateWithYear(1900, month: 06, day: 14)
-        expect(period.endDate) == endDate
-    }
-    
-    func testTimePeriod_createPeriodEndingWithMonthSize_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Month, endingAt: endDate, calendar: calendar)
-        
-        expect(period.startDate) == calendar.dateWithYear(1900, month: 05, day: 15)
-        expect(period.endDate) == endDate
-    }
-    
-    func testTimePeriod_createPeriodEndingWithYearSize_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Year, endingAt: endDate, calendar: calendar)
-        
-        expect(period.startDate) == calendar.dateWithYear(1899, month: 06, day: 15)
-        expect(period.endDate) == endDate
-    }
-    
-    func testTimePeriod_createPeriodEndingWithDaySizeAndCustomAmount_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Day, amount: 5, endingAt: endDate, calendar: calendar)
-        
-        expect(period.startDate) == calendar.dateWithYear(1900, month: 06, day: 10)
-        expect(period.endDate) == endDate
-    }
-    
-    func testTimePeriod_createPeriodEndingWithMonthSizeAndCustomAmount_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Month, amount: 5, endingAt: endDate, calendar: calendar)
-        
-        expect(period.startDate) == calendar.dateWithYear(1900, month: 01, day: 15)
-        expect(period.endDate) == endDate
-    }
-    
-    func testTimePeriod_createPeriodEndingWithYearSizeAndCustomAmount_returnsValidTimePeriod() {
-        let period = TimePeriod(size: .Year, amount: 5, endingAt: endDate, calendar: calendar)
-        
-        expect(period.startDate) == calendar.dateWithYear(1895, month: 06, day: 15)
-        expect(period.endDate) == endDate
+        for (size, amount, expectedDate) in testCases {
+            self.testTimePeriodEndingAtWithSize(size, amount: amount, expectedStartDate: expectedDate)
+        }
     }
     
     func testTimePeriod_createPeriodWithAllTime_returnsPeriodWithDistantPastAndFuture() {
@@ -207,7 +162,7 @@ class TimePeriodTests: XCTestCase {
     //MARK: - Period comparison tests
     
     func testTimePeriod_isMoment_returnsTrueIfStartDateIsEqualEndDate() {
-        let period = TimePeriod(startDate: calendar.dateWithYear(2000), endDate: calendar.dateWithYear(2000), calendar: calendar)
+        let period = TimePeriod(startDate: date("2000-01-01"), endDate: date("2000-01-01"), calendar: calendar)
         expect(period.isMoment()) == true
         expect(self.longPeriod.isMoment()) == false
     }
@@ -308,6 +263,22 @@ class TimePeriodTests: XCTestCase {
         expect(NSCalendar.isLeapYear(2004)) == true
     }
     
+    
+    //MARK: - Helpers
+    
+    func testTimePeriodStartingAtWithSize(size: TimePeriodSize, amount: Int, expectedEndDate: NSDate) {
+        let period = TimePeriod(size: size, amount: amount, startingAt: startDate, calendar: calendar)
+        
+        expect(period.startDate) == startDate
+        expect(period.endDate) == expectedEndDate
+    }
+    
+    func testTimePeriodEndingAtWithSize(size: TimePeriodSize, amount: Int, expectedStartDate: NSDate) {
+        let period = TimePeriod(size: size, amount: amount, endingAt: endDate, calendar: calendar)
+        
+        expect(period.startDate) == expectedStartDate
+        expect(period.endDate) == endDate
+    }
     
     
     

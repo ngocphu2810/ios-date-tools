@@ -26,12 +26,12 @@ class TimePeriodChainTests: XCTestCase {
         super.setUp()
         calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
         calendar.timeZone = NSTimeZone(forSecondsFromGMT: 0)
-        startDate = calendar.dateWithYear(2010, month: 01, day: 01)
-        monthPeriod = self.createTimePeriodWithMothSize(1, startingAt: startDate)
-        twoMonthsPeriod = self.createTimePeriodWithMothSize(2, startingAt: startDate)
-        monthPeriodAfterMonth = self.createTimePeriodWithMothSize(1, startingAt: calendar.dateByAddingMonths(1, toDate: self.startDate))
-        twoMonthsPeriodAfterTwoWeeks = self.createTimePeriodWithMothSize(2, startingAt: calendar.dateByAddingWeeks(2, toDate: self.startDate))
-        fourMonthsPeriod = self.createTimePeriodWithMothSize(4, startingAt: self.startDate)
+        startDate = date("2010-01-01")
+        monthPeriod = self.createTimePeriodWithMonthSize(1, startingAt: startDate)
+        twoMonthsPeriod = self.createTimePeriodWithMonthSize(2, startingAt: startDate)
+        monthPeriodAfterMonth = self.createTimePeriodWithMonthSize(1, startingAt: calendar.dateByAddingMonths(1, toDate: self.startDate))
+        twoMonthsPeriodAfterTwoWeeks = self.createTimePeriodWithMonthSize(2, startingAt: calendar.dateByAddingWeeks(2, toDate: self.startDate))
+        fourMonthsPeriod = self.createTimePeriodWithMonthSize(4, startingAt: self.startDate)
         
         chain = TimePeriodChain(calendar: calendar)
         
@@ -48,16 +48,16 @@ class TimePeriodChainTests: XCTestCase {
     
     func testTimePeriodChain_appendElements_createsAChainOfTimePeriods() {
         expect(self.chain[0].startDate) == startDate
-        expect(self.chain[0].endDate) == calendar.dateWithYear(2010, month: 02, day: 01)
+        expect(self.chain[0].endDate)   == date("2010-02-01")
         
-        expect(self.chain[1].startDate) == calendar.dateWithYear(2010, month: 02, day: 01)
-        expect(self.chain[1].endDate) == calendar.dateWithYear(2010, month: 04, day: 01)
+        expect(self.chain[1].startDate) == date("2010-02-01")
+        expect(self.chain[1].endDate)   == date("2010-04-01")
         
-        expect(self.chain[2].startDate) == calendar.dateWithYear(2010, month: 04, day: 01)
-        expect(self.chain[2].endDate) == calendar.dateWithYear(2010, month: 04, day: 29)
+        expect(self.chain[2].startDate) == date("2010-04-01")
+        expect(self.chain[2].endDate)   == date("2010-04-29")
         
-        expect(self.chain[3].startDate) == calendar.dateWithYear(2010, month: 04, day: 29)
-        expect(self.chain[3].endDate) == calendar.dateWithYear(2010, month: 06, day: 27)
+        expect(self.chain[3].startDate) == date("2010-04-29")
+        expect(self.chain[3].endDate)   == date("2010-06-27")
     }
     
     func testTimePeriodChain_startDate_returnsStartDateOfTimePeriodChain() {
@@ -65,7 +65,7 @@ class TimePeriodChainTests: XCTestCase {
     }
     
     func testTimePeriodChain_endDate_returnsEndDateOfTimePeriodChain() {
-        expect(self.chain.endDate) == calendar.dateWithYear(2010, month: 06, day: 27)
+        expect(self.chain.endDate) == date("2010-06-27")
     }
     
     func testTimePeriodChain_durationInDays_returnsNumberOfDaysInChain() {
@@ -76,9 +76,9 @@ class TimePeriodChainTests: XCTestCase {
         self.chain.insertTimePeriod(self.fourMonthsPeriod, atIndex: 0)
         
         expect(self.chain.first!.endDate) == startDate
-        expect(self.chain.first!.startDate) == calendar.dateWithYear(2009, month: 09, day: 3)
+        expect(self.chain.first!.startDate) == date("2009-09-03")
         
-        expect(self.chain.last!.endDate) == calendar.dateWithYear(2010, month: 06, day: 27)
+        expect(self.chain.last!.endDate) == date("2010-06-27")
     }
     
     func testTimePeriodChain_insertFirstTimePeriod_insertsTimePeriodWithCurrentDates() {
@@ -94,18 +94,18 @@ class TimePeriodChainTests: XCTestCase {
         self.chain.insertTimePeriod(TimePeriod(size: .Day, amount: 1, startingAt: startDate, calendar: calendar), atIndex: 2)
         
         expect(self.chain[0].startDate) == startDate
-        expect(self.chain[1].endDate) == calendar.dateWithYear(2010, month: 04, day: 01)
-        expect(self.chain[2].endDate) == calendar.dateWithYear(2010, month: 04, day: 02)
-        expect(self.chain[3].endDate) == calendar.dateWithYear(2010, month: 04, day: 30)
-        expect(self.chain[4].endDate) == calendar.dateWithYear(2010, month: 06, day: 28)
+        expect(self.chain[1].endDate) == date("2010-04-01")
+        expect(self.chain[2].endDate) == date("2010-04-02")
+        expect(self.chain[3].endDate) == date("2010-04-30")
+        expect(self.chain[4].endDate) == date("2010-06-28")
     }
     
     func testTimePeriodChain_insertTimePeriodAtTheEnd_appendsTimePeriodToChainWithCorrectedDates() {
         self.chain.insertTimePeriod(TimePeriod(size: .Day, amount: 1, startingAt: chain[3].endDate, calendar: calendar), atIndex: 4)
         
-        expect(self.chain[2].endDate) == calendar.dateWithYear(2010, month: 04, day: 29)
-        expect(self.chain[3].endDate) == calendar.dateWithYear(2010, month: 06, day: 27)
-        expect(self.chain[4].endDate) == calendar.dateWithYear(2010, month: 06, day: 28)
+        expect(self.chain[2].endDate) == date("2010-04-29")
+        expect(self.chain[3].endDate) == date("2010-06-27")
+        expect(self.chain[4].endDate) == date("2010-06-28")
     }
     
     func testTimePeriodChain_insertTimePeriodBeyondTheBounds_doesNothingAndFailsSilently() {
@@ -136,7 +136,7 @@ class TimePeriodChainTests: XCTestCase {
         
         expect(self.chain.count) == 3
         expect(self.chain.startDate) == self.startDate
-        expect(self.chain.endDate) == calendar.dateWithYear(2010, month: 05, day: 27)
+        expect(self.chain.endDate) == date("2010-05-27")
         expect(removedPeriod).notTo(beNil())
     }
     
@@ -145,7 +145,7 @@ class TimePeriodChainTests: XCTestCase {
         
         expect(self.chain.count) == 3
         expect(self.chain.startDate) == self.startDate
-        expect(self.chain.endDate) == calendar.dateWithYear(2010, month: 05, day: 30)
+        expect(self.chain.endDate) == date("2010-05-30")
         expect(removedPeriod).notTo(beNil())
     }
     
@@ -154,7 +154,7 @@ class TimePeriodChainTests: XCTestCase {
         
         expect(self.chain.count) == 3
         expect(self.chain.startDate) == self.startDate
-        expect(self.chain.endDate) == calendar.dateWithYear(2010, month: 04, day: 29)
+        expect(self.chain.endDate) == date("2010-04-29")
         expect(removedPeriod).notTo(beNil())
     }
     
@@ -189,7 +189,7 @@ class TimePeriodChainTests: XCTestCase {
     
     //MARK: - helpers
     
-    func createTimePeriodWithMothSize(amount: Int, startingAt: NSDate) -> TimePeriod {
+    func createTimePeriodWithMonthSize(amount: Int, startingAt: NSDate) -> TimePeriod {
         return TimePeriod(size: .Month, amount: amount, startingAt: startingAt, calendar: self.calendar)
     }
 }
