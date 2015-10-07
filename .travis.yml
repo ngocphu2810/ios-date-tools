@@ -1,13 +1,14 @@
 language: objective-c
 
 branches:
-	only:
-	-master
+ only:
+ - master
 
-xcode-workspace: DateTools.xcworkspace
-xcode-scheme: DateToolsTests
-osx-image: xcode7
-xcode-sdk: iphonesimulator9.0
+xcode_workspace: DateTools.xcworkspace
+xcode_scheme: DateToolsTests
+osx_image: xcode7
+xcode_sdk: iphonesimulator9.0
+
 
 before_install:
 - gem install cocoapods
@@ -17,4 +18,4 @@ install:
 - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 
 script:
-- set -o pipefail && xcodebuild clean build test -workspace DateTools.xcworkspace -scheme DateToolsTests | xcpretty -c
+- set -o pipefail && xcodebuild -workspace DateTools.xcworkspace -scheme DateToolsTests -sdk iphonesimulator test | xcpretty -c
